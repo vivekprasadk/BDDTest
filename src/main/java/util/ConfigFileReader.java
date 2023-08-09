@@ -43,5 +43,13 @@ public class ConfigFileReader {
 		return this.configFile.getProperty(key);
 	}
 
+	public String getReportConfigPath() {
+		String reportConfigPath = System.getProperty("user.dir") + configFile.getProperty("reportConfigPath");
+		if (reportConfigPath != null)
+			return reportConfigPath;
+		else
+			throw new RuntimeException(
+					"Report Config Path not specified in the Config.properties file for the Key:reportConfigPath");
+	}
 
 }
