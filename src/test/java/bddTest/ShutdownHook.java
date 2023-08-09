@@ -1,4 +1,4 @@
-package bddTest.steps;
+package bddTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class ShutdownHook extends Thread {
         if (sourceFolder.isDirectory()) {
             if (!destinationFolder.exists())
                 destinationFolder.mkdir();
-            String files[] = sourceFolder.list();
+            String[] files = sourceFolder.list();
             for (String file : files) {
                 File srcFile = new File(sourceFolder, file);
                 File destFile = new File(destinationFolder, file);
@@ -25,6 +25,7 @@ public class ShutdownHook extends Thread {
             Files.copy(sourceFolder.toPath(), destinationFolder.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
+
     private void createReportsCopy() {
         File sourceFolder = new File(System.getProperty("user.dir") + "/reports");
         SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
@@ -39,6 +40,7 @@ public class ShutdownHook extends Thread {
             System.out.println("Copying Reports Failed");
         }
     }
+
     @Override
     public void run() {
         String reportsCopy = configFileReader.getProperty("reports.history");

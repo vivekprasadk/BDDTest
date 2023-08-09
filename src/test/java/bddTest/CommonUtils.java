@@ -23,12 +23,15 @@ public class CommonUtils {
     public static ConfigFileReader configFileReader = new ConfigFileReader();
     public static WebDriver driver = null;
     public static Scenario scenario = null;
+
     public static void scrollToTop() {
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, -document.body.scrollHeight)");
     }
+
     public void refreshPage() {
         driver.navigate().refresh();
     }
+
     public String getCurrentURL() {
         return driver.getCurrentUrl();
     }
@@ -36,6 +39,7 @@ public class CommonUtils {
     public void switchToWindow(String windowHandle) {
         driver.switchTo().window(windowHandle);
     }
+
     public Set<String> getWindowHandles() {
         return driver.getWindowHandles();
     }
@@ -49,6 +53,7 @@ public class CommonUtils {
         highlightElement(element);
         return element;
     }
+
     public List<WebElement> locateElements(By identifier) {
         return driver.findElements(identifier);
     }
@@ -58,11 +63,13 @@ public class CommonUtils {
         actions.moveToElement(locateElement(identifier));
         actions.build().perform();
     }
+
     public void scrollToElement(WebElement element) {
         Actions actions = new Actions(driver);
         actions.moveToElement(element);
         actions.build().perform();
     }
+
     public void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -82,6 +89,7 @@ public class CommonUtils {
             }
         }
     }
+
     public static void takeScreenshot() {
         String screenshotName = scenario.getName().replaceAll(" ", "_");
         try {
@@ -116,6 +124,7 @@ public class CommonUtils {
     public boolean isPresent(By identifier) {
         return getSize(identifier) > 0;
     }
+
     public void click(By identifier) {
         scrollToElement(identifier);
         locateElement(identifier).click();
@@ -125,6 +134,7 @@ public class CommonUtils {
         scrollToElement(webElement);
         webElement.click();
     }
+
     public void clearText(By identifier) {
         locateElement(identifier).clear();
     }
@@ -132,6 +142,7 @@ public class CommonUtils {
     public void enterText(By identifier, String inputText) {
         locateElement(identifier).sendKeys(inputText);
     }
+
     public void selectByValue(By identifier, String valueText) {
         new Select(locateElement(identifier)).selectByValue(valueText);
     }
@@ -150,21 +161,25 @@ public class CommonUtils {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(identifier));
         setSpecificImplicitWait(0);
     }
-    public void setSpecificImplicitWait(int time){
+
+    public void setSpecificImplicitWait(int time) {
         driver.manage().timeouts().implicitlyWait(time, TimeUnit.MILLISECONDS);
     }
+
     public void waitForElementToBeClickable(By identifier, int timeout) {
         setSpecificImplicitWait(100);
         WebDriverWait wait = new WebDriverWait(driver, timeout);
         wait.until(ExpectedConditions.elementToBeClickable(identifier));
         setSpecificImplicitWait(0);
     }
+
     public void waitTillElementVisible(By identifier, int timeout) {
         setSpecificImplicitWait(100);
         WebDriverWait wait = new WebDriverWait(driver, timeout);
         wait.until(ExpectedConditions.visibilityOfElementLocated(identifier));
         setSpecificImplicitWait(0);
     }
+
     public String getText(By identifier) {
         scrollToElement(identifier);
         return locateElement(identifier).getText().trim();
@@ -176,19 +191,17 @@ public class CommonUtils {
         return (element).getText().trim();
 
     }
+
     public boolean isSelected(WebElement element) {
         return element.isSelected();
     }
+
     public boolean isSelected(By identifier) {
         return locateElement(identifier).isSelected();
     }
+
     public String getTextAttributeValue(By identifier) {
         return locateElement(identifier).getAttribute("value");
     }
-
-
-
-
-
 
 }

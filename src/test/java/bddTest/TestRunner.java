@@ -1,7 +1,6 @@
 package bddTest;
 
 
-import bddTest.steps.ShutdownHook;
 import com.vimalselvam.cucumber.listener.Reporter;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
@@ -15,8 +14,8 @@ import static bddTest.CommonUtils.configFileReader;
 import static bddTest.CommonUtils.driver;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = { "com.cucumber.listener.ExtentCucumberFormatter:reports/report.html", "pretty",
-        "html:reports/test-report" }, features = "src/test/resources/features/", tags = "@Challenge")
+@CucumberOptions(plugin = {"com.cucumber.listener.ExtentCucumberFormatter:reports/report.html", "pretty",
+        "html:reports/test-report"}, features = "src/test/resources/features/", tags = "@Challenge")
 public class TestRunner {
 
     @BeforeClass
@@ -43,6 +42,7 @@ public class TestRunner {
         }
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
+
     public static void writeExtentReport() {
 
         Reporter.loadXMLConfig(new File(configFileReader.getReportConfigPath()));
