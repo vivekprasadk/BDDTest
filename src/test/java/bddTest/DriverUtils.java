@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static bddTest.CommonUtils.configFileReader;
 import static bddTest.CommonUtils.driver;
@@ -36,7 +37,7 @@ public class DriverUtils {
      *
      */
     public void launchBrowser() {
-        String browser = configFileReader.getProperty("webDriver.driver").toLowerCase();
+        String browser = configFileReader.getProperty("webDriver.driver");
         switch (browser) {
             case "firefox":
                 if (getOperatingSystem().contains("mac")) {
@@ -58,9 +59,12 @@ public class DriverUtils {
                 } else {
                     WebDriverManager.chromedriver().setup();
                 }
+                DesiredCapabilities capabilities = new DesiredCapabilities();
                 ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.setHeadless(true);
+                chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--disable-gpu");
                 chromeOptions.addArguments("--window-size=1300,800");
+                capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
                 driver = new ChromeDriver(chromeOptions);
                 break;
             case "firefoxHeadless":

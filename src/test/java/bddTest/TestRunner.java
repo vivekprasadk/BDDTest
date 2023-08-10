@@ -1,7 +1,10 @@
 package bddTest;
 
 
-import com.vimalselvam.cucumber.listener.Reporter;
+//import com.vimalselvam.cucumber.listener.Reporter;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.service.ExtentService;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.AfterClass;
@@ -14,10 +17,10 @@ import static bddTest.CommonUtils.configFileReader;
 import static bddTest.CommonUtils.driver;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"com.cucumber.listener.ExtentCucumberFormatter:reports/report.html", "pretty",
-        "html:reports/test-report"}, features = "src/test/resources/features/", tags = "@Challenge")
+@CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:", "pretty",
+        "html:reports/test-report","junit:target/cucumber-junit-report.xml"}, features = "src/test/resources/features/", tags = "@Challenge")
 public class TestRunner {
-
+    private static ExtentReports extent;
     @BeforeClass
     public static void setup() {
         new File("./reports").mkdirs();
@@ -40,25 +43,25 @@ public class TestRunner {
                 myFile.delete();
             }
         }
+        writeExtentReport();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
     public static void writeExtentReport() {
-
-        Reporter.loadXMLConfig(new File(configFileReader.getReportConfigPath()));
-        Reporter.setSystemInfo("User Name", System.getProperty("user.name"));
-        Reporter.setSystemInfo("Time Zone", System.getProperty("user.timezone"));
-        Reporter.setSystemInfo("Operating System", System.getProperty("os.name"));
-        Reporter.setSystemInfo("OS architecture", System.getProperty("os.arch"));
-        Reporter.setSystemInfo("Browser", configFileReader.getProperty("webDriver.driver"));
-        Reporter.setSystemInfo("Selenium", "3.141.59");
-        Reporter.setSystemInfo("Cucumber", "7.13.0");
-        Reporter.setSystemInfo("Java Version", System.getProperty("java.version"));
+        extent = ExtentService.getInstance();
+        extent.setSystemInfo("User Name", System.getProperty("user.name"));
+        extent.setSystemInfo("Time Zone", System.getProperty("user.timezone"));
+        extent.setSystemInfo("Operating System", System.getProperty("os.name"));
+        extent.setSystemInfo("OS architecture", System.getProperty("os.arch"));
+        extent.setSystemInfo("Browser", configFileReader.getProperty("webDriver.driver"));
+        extent.setSystemInfo("Selenium", "3.141.59");
+        extent.setSystemInfo("Cucumber", "7.13.0");
+        extent.setSystemInfo("Java Version", System.getProperty("java.version"));
     }
 
     @AfterClass
     public static void tearDownClass() {
-        writeExtentReport();
+
         boolean hasQuit = driver.toString().contains("(null)");
         if (!hasQuit) {
             driver.quit();

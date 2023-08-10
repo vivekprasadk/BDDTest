@@ -1,9 +1,14 @@
 package bddTest;
 
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
+import com.aventstack.extentreports.service.ExtentService;
 import com.google.common.io.Files;
 
-import com.vimalselvam.cucumber.listener.Reporter;
+
 import io.cucumber.java.Scenario;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -111,7 +116,7 @@ public class CommonUtils {
             Files.copy(sourcePath, destinationPath);
 
             // This attach the specified screenshot to the test
-            Reporter.addScreenCaptureFromPath(destinationPath.toString());
+            scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", screenshotName + dateName);
         } catch (IOException e) {
 
         }
