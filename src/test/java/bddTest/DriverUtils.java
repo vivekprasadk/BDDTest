@@ -2,6 +2,7 @@ package bddTest;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.OperatingSystem;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -10,7 +11,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static bddTest.CommonUtils.configFileReader;
-import static bddTest.CommonUtils.driver;
 
 /**
  * @author vivekprasadk
@@ -29,74 +29,93 @@ public class DriverUtils {
      * closes the browser
      */
     public void closeBrowser(){
-        driver.quit();
+        WebDriver driver = CommonUtils.getDriver();
+        if (driver != null) {
+            driver.quit();
+            CommonUtils.removeDriver(); // Remove driver instance from ThreadLocal after quitting
+        }
     }
 
     /**
      * Launches the browser based on the value from the config.properties
      *
      */
-    public void launchBrowser() {
+    public void createDriver() {
         String browser = configFileReader.getProperty("webDriver.driver");
+        WebDriver driver;
+        WebDriverManager wdm = WebDriverManager.getInstance(browser);
+
         switch (browser) {
             case "firefox":
                 if (getOperatingSystem().contains("mac")) {
-                    WebDriverManager.firefoxdriver().operatingSystem(OperatingSystem.MAC).setup();
-                } else
-                    WebDriverManager.firefoxdriver().setup();
+                    wdm.operatingSystem(OperatingSystem.MAC).setup();
+                } else {
+                    wdm.setup();
+                }
                 driver = new FirefoxDriver();
+                CommonUtils.setDriver(driver);
                 break;
             case "edge":
                 if (getOperatingSystem().contains("mac")) {
-                    WebDriverManager.edgedriver().operatingSystem(OperatingSystem.MAC).setup();
-                } else
-                    WebDriverManager.edgedriver().setup();
+                    wdm.operatingSystem(OperatingSystem.MAC).setup();
+                } else {
+                    wdm.setup();
+                }
                 driver = new EdgeDriver();
+                CommonUtils.setDriver(driver);
                 break;
             case "chromeHeadless":
                 if (getOperatingSystem().contains("mac")) {
-                    WebDriverManager.chromedriver().operatingSystem(OperatingSystem.MAC).setup();
+                    wdm.operatingSystem(OperatingSystem.MAC).setup();
                 } else {
-                    WebDriverManager.chromedriver().setup();
+                    wdm.setup();
                 }
-                DesiredCapabilities capabilities = new DesiredCapabilities();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--headless");
                 chromeOptions.addArguments("--disable-gpu");
                 chromeOptions.addArguments("--window-size=1300,800");
-                capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
                 driver = new ChromeDriver(chromeOptions);
+                CommonUtils.setDriver(driver);
                 break;
             case "firefoxHeadless":
                 if (getOperatingSystem().contains("mac")) {
-                    WebDriverManager.firefoxdriver().operatingSystem(OperatingSystem.MAC).setup();
-                } else
-                    WebDriverManager.firefoxdriver().setup();
+                    wdm.operatingSystem(OperatingSystem.MAC).setup();
+                } else {
+                    wdm.setup();
+                }
                 FirefoxOptions options = new FirefoxOptions();
                 options.setHeadless(true);
                 options.addArguments("--window-size=1200,600");
                 driver = new FirefoxDriver(options);
+                CommonUtils.setDriver(driver);
                 break;
             case "chrome":
             default:
                 if (getOperatingSystem().contains("mac")) {
-                    WebDriverManager.chromedriver().operatingSystem(OperatingSystem.MAC).setup();
+                    wdm.operatingSystem(OperatingSystem.MAC).setup();
                 } else {
-                    WebDriverManager.chromedriver().setup();
+                    wdm.setup();
                 }
                 driver = new ChromeDriver();
+                CommonUtils.setDriver(driver);
                 break;
         }
     }
+
 
     /**
      * Launch the URL from the config.properties file
      */
     public void launchURL() {
-        String protocol = configFileReader.getProperty("application.protocol");
-        String url = configFileReader.getProperty("application.url");
-        String launchUrl = protocol + url;
-        driver.get(launchUrl);
+        WebDriver driver = CommonUtils.getDriver();
+        if (driver != null) {
+            String protocol = configFileReader.getProperty("application.protocol");
+            String url = configFileReader.getProperty("application.url");
+            String launchUrl = protocol + url;
+            driver.get(launchUrl);
+        } else {
+            throw new IllegalStateException("WebDriver instance not found for this thread");
+        }
     }
 
     /**
@@ -104,14 +123,18 @@ public class DriverUtils {
      *
      */
     public void resizeWindow() {
-        if (configFileReader.getProperty("window.maximize").equalsIgnoreCase("true")) {
-            driver.manage().window().maximize();
+        WebDriver driver = CommonUtils.getDriver();
+        if (driver != null) {
+            if (configFileReader.getProperty("window.maximize").equalsIgnoreCase("true")) {
+                driver.manage().window().maximize();
+            } else {
+                int width = Integer.parseInt(configFileReader.getProperty("window.width"));
+                int height = Integer.parseInt(configFileReader.getProperty("window.height"));
+                Dimension d = new Dimension(width, height);
+                driver.manage().window().setSize(d);
+            }
         } else {
-            int width = Integer.parseInt(configFileReader.getProperty("window.width"));
-            int height = Integer.parseInt(configFileReader.getProperty("window.height"));
-            Dimension d = new Dimension(width, height);
-            // Resize the current window to the given dimension
-            driver.manage().window().setSize(d);
+            throw new IllegalStateException("WebDriver instance not found for this thread");
         }
     }
 }

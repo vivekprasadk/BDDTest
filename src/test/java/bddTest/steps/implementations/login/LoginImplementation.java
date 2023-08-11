@@ -1,16 +1,12 @@
 package bddTest.steps.implementations.login;
 
-
 import bddTest.pages.login.LoginPage;
 import org.junit.Assert;
-import static bddTest.CommonUtils.printInReport;
-
-
 
 public class LoginImplementation {
 	private LoginPage login = new LoginPage();
 
-	public void waitForLoginButtonTobeDisplayed() {
+	public void waitForLoginButtonToLoad() {
 		login.waitForLoginButtonToLoad();
 	}
 
@@ -33,11 +29,8 @@ public class LoginImplementation {
 	public void clickLoginButton() {
 		if (login.isLoginButtonPresent()) {
 			login.clickLoginButton();
-			printInReport("Logged in to the application ");
 		} else {
 			Assert.fail("The Login button is not found");
 		}
 	}
-
-
 }

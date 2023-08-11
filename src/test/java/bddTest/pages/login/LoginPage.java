@@ -4,16 +4,17 @@ import bddTest.CommonUtils;
 import org.openqa.selenium.By;
 
 public class LoginPage extends CommonUtils {
-    By USERNAME = By.name("username");
-    By PASSWORD = By.name("password");
-    By LOGIN_BUTTON = By.cssSelector(".orangehrm-login-button");
+    private static final By USERNAME = By.name("username");
+    private static final By PASSWORD = By.name("password");
+    private static final By LOGIN_BUTTON = By.cssSelector(".orangehrm-login-button");
 
+    public void waitForLoginButtonToLoad() {
+        waitTillElementVisible(LOGIN_BUTTON, 30);
+    }
     public void waitForUserNameToLoad() {
         waitForElementToBeClickable(USERNAME, 30);
     }
-    public void waitForLoginButtonToLoad() {
-        waitForElementToBeClickable(LOGIN_BUTTON, 30);
-    }
+
     public boolean isUserNamePresent() {
         return isPresent(USERNAME);
     }

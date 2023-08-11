@@ -1,26 +1,30 @@
 package bddTest;
 
-
-//import com.vimalselvam.cucumber.listener.Reporter;
-
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.service.ExtentService;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.WebDriver;
 
 import java.io.File;
 
 import static bddTest.CommonUtils.configFileReader;
-import static bddTest.CommonUtils.driver;
+import static bddTest.CommonUtils.driverThreadLocal;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:", "pretty",
-        "html:reports/test-report","junit:target/cucumber-junit-report.xml"}, features = "src/test/resources/features/", tags = "@Challenge")
+        "html:reports/test-report", "junit:target/cucumber-junit-report.xml"},
+        features = "src/test/resources/features/", tags = "@Challenge",
+        glue = {"bddTest.steps.definitions", "bddTest"})
 public class TestRunner {
     private static ExtentReports extent;
+    private static ThreadLocal<DriverUtils> driverUtilThreadLocal;
+
     @BeforeClass
     public static void setup() {
         new File("./reports").mkdirs();
@@ -44,6 +48,9 @@ public class TestRunner {
             }
         }
         writeExtentReport();
+        driverUtilThreadLocal = new ThreadLocal<>();
+        driverUtilThreadLocal.set(new DriverUtils());
+        driverUtilThreadLocal.get().createDriver();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
@@ -61,10 +68,14 @@ public class TestRunner {
 
     @AfterClass
     public static void tearDownClass() {
-
-        boolean hasQuit = driver.toString().contains("(null)");
-        if (!hasQuit) {
+        driverUtilThreadLocal.get().closeBrowser();
+        WebDriver driver = CommonUtils.getDriver();
+        if (driver != null) {
             driver.quit();
+            CommonUtils.removeDriver();
         }
+    }
+    public static DriverUtils getDriverUtils() {
+        return driverUtilThreadLocal.get();
     }
 }
