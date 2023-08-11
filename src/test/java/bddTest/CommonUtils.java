@@ -1,14 +1,10 @@
 package bddTest;
 
-import com.aventstack.extentreports.MediaEntityBuilder;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
-import com.aventstack.extentreports.service.ExtentService;
+
 import com.google.common.io.Files;
 
 
 import io.cucumber.java.Scenario;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -207,6 +203,11 @@ public class CommonUtils {
 
     public String getTextAttributeValue(By identifier) {
         return locateElement(identifier).getAttribute("value");
+    }
+
+
+    public static void printInReport(String output) {
+        scenario.log(output);
     }
 
 }

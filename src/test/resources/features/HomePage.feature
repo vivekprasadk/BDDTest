@@ -6,3 +6,4 @@ Feature: Home Page Section
     Given I launch the application and Login as preferred user
     Then I verify the dashboard
     And I logout and close the browser
+
