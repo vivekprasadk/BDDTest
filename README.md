@@ -49,34 +49,15 @@ OS and Browser Support
 Additional Features
 ------------------
 
-**Input random values in the execution**
-
-* This project provides a feature to input random values to the text boxes or click randomly yes or no option. 
-* To make the inputs random update the input values that is passed in the feature file to 'Random'.
-* By default, all the values that can be passed as random is set as Random.
-* To pass a specific value for the input field update the input field with that value in the feature file.
-
 **Highlight element during execution**
 
 * The project provides a feature to highlight an element during the execution
 * Set the property highlight.element as true in the Config.properties if you wish to see the elements highlighted during execution. By default the value is set to false.
 
-
-**Sending Mail after execution with the report as attachment**
-
-* The project provides a feature to send the report as an attachment to a Gmail account.
-* Set the property mailConfig.send as true in the Config.properties if you wish to send the mail after execution. By default the value is set to false.
-* The email recipients can be configured in the mail_config file.
-* multiple recipient email ids can be given separated by ';'
-
 **Create Separate reports for each execution**
 
 * The project gives a feature to create separate reports file for each execution in the project folder.
 * Set the property reports.history as true in the Config.properties if you wish to create separate reports after each execution. By default it is set as false.
-
-** Application Ref ID **
-
-* Upon reaching the end of the current test case execution the Application RefId will be printed in the report as well as a screenshot will be captured and attached to the report.
 
 
 #selenium-cucumber-java-maven
@@ -98,5 +79,5 @@ Writing a test
 
 The cucumber features goes in the `features` library and should have the ".feature" extension.
 
-You can start out by looking at `features/1Eligibility.feature`. You can extend this feature or make your own features.
+You can start out by looking at `features/HomePage.feature`. You can extend this feature or make your own features.
 
