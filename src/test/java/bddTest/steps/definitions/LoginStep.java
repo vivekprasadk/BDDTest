@@ -11,7 +11,7 @@ public class LoginStep {
     private LoginImplementation login;
 
     public LoginStep() {
-        driverUtil = TestRunner.getDriverUtils();
+        driverUtil = Hooks.getDriverUtils();
         login = new LoginImplementation();
     }
 

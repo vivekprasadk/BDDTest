@@ -53,7 +53,6 @@ public class DriverUtils {
                     wdm.setup();
                 }
                 driver = new FirefoxDriver();
-                CommonUtils.setDriver(driver);
                 break;
             case "edge":
                 if (getOperatingSystem().contains("mac")) {
@@ -62,7 +61,6 @@ public class DriverUtils {
                     wdm.setup();
                 }
                 driver = new EdgeDriver();
-                CommonUtils.setDriver(driver);
                 break;
             case "chromeHeadless":
                 if (getOperatingSystem().contains("mac")) {
@@ -75,7 +73,6 @@ public class DriverUtils {
                 chromeOptions.addArguments("--disable-gpu");
                 chromeOptions.addArguments("--window-size=1300,800");
                 driver = new ChromeDriver(chromeOptions);
-                CommonUtils.setDriver(driver);
                 break;
             case "firefoxHeadless":
                 if (getOperatingSystem().contains("mac")) {
@@ -87,7 +84,6 @@ public class DriverUtils {
                 options.setHeadless(true);
                 options.addArguments("--window-size=1200,600");
                 driver = new FirefoxDriver(options);
-                CommonUtils.setDriver(driver);
                 break;
             case "chrome":
             default:
@@ -97,10 +93,12 @@ public class DriverUtils {
                     wdm.setup();
                 }
                 driver = new ChromeDriver();
-                CommonUtils.setDriver(driver);
                 break;
         }
+
+        CommonUtils.setDriver(driver); // Set the driver instance in ThreadLocal
     }
+
 
 
     /**

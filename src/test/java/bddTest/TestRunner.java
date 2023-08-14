@@ -2,8 +2,6 @@ package bddTest;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.service.ExtentService;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.AfterClass;
@@ -14,16 +12,24 @@ import org.openqa.selenium.WebDriver;
 import java.io.File;
 
 import static bddTest.CommonUtils.configFileReader;
-import static bddTest.CommonUtils.driverThreadLocal;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:", "pretty",
-        "html:reports/test-report", "junit:target/cucumber-junit-report.xml"},
-        features = "src/test/resources/features/", tags = "@Challenge",
-        glue = {"bddTest.steps.definitions", "bddTest"})
+@CucumberOptions(
+        plugin = {
+                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+                "pretty",
+                "html:reports/test-report",
+                "junit:target/cucumber-junit-report.xml",
+                "json:target/cucumber-report.json" // JSON report for parallel execution
+        },
+        features = "src/test/resources/features/",
+        tags = "@Challenge",
+        glue = {"bddTest.steps.definitions", "bddTest"}
+)
+
 public class TestRunner {
     private static ExtentReports extent;
-    private static ThreadLocal<DriverUtils> driverUtilThreadLocal;
+
 
     @BeforeClass
     public static void setup() {
@@ -48,9 +54,6 @@ public class TestRunner {
             }
         }
         writeExtentReport();
-        driverUtilThreadLocal = new ThreadLocal<>();
-        driverUtilThreadLocal.set(new DriverUtils());
-        driverUtilThreadLocal.get().createDriver();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
@@ -66,16 +69,15 @@ public class TestRunner {
         extent.setSystemInfo("Java Version", System.getProperty("java.version"));
     }
 
+
     @AfterClass
     public static void tearDownClass() {
-        driverUtilThreadLocal.get().closeBrowser();
+
         WebDriver driver = CommonUtils.getDriver();
         if (driver != null) {
             driver.quit();
             CommonUtils.removeDriver();
         }
     }
-    public static DriverUtils getDriverUtils() {
-        return driverUtilThreadLocal.get();
-    }
+
 }

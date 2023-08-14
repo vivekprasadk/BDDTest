@@ -1,10 +1,13 @@
 @Challenge @UserStory1
 Feature: Home Page Section
 
-  Scenario: AC-1:Login and verify the dashboard page:
-
+  Background:
     Given I launch the application and Login as preferred user
 
-  Scenario: AC-2:verify the dashboard page:
+  Scenario: AC-1:Verify the dashboard page:
 
-    Given I verify the dashboard
+    Then I verify the dashboard
+
+  Scenario: AC-2:Verify The SidePanel
+
+    Then I Verify SidePanel

@@ -3,17 +3,27 @@ package bddTest;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+
 
 public class Hooks {
+    private static ThreadLocal<DriverUtils> driverUtilThreadLocal;
+    @Before
+    public void beforeFeature(){
+        driverUtilThreadLocal = new ThreadLocal<>();
+        driverUtilThreadLocal.set(new DriverUtils());
+        driverUtilThreadLocal.get().createDriver();
+        driverUtilThreadLocal.get().resizeWindow();
+    }
 
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
         CommonUtils.scenario = scenario;
     }
 
-
+    @After
+    public void afterFeature(){
+        driverUtilThreadLocal.get().closeBrowser();
+    }
 
     @After
     public void afterScenario(Scenario scenario) throws InterruptedException {
@@ -23,5 +33,8 @@ public class Hooks {
         }
     }
 
+    public static DriverUtils getDriverUtils() {
+        return driverUtilThreadLocal.get();
+    }
 
 }

@@ -8,6 +8,7 @@ import bddTest.steps.implementations.dashboard.DashboardImplementation;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import org.junit.Assert;
 
 /**
  * @author vivekprasadk
@@ -16,7 +17,7 @@ public class DashboardStep {
     private DriverUtils driverUtil;
     private DashboardImplementation dashboard;
     public DashboardStep(){
-        driverUtil = TestRunner.getDriverUtils();
+        driverUtil = Hooks.getDriverUtils();
         dashboard = new DashboardImplementation();
     }
 
@@ -25,8 +26,8 @@ public class DashboardStep {
         dashboard.verifyIfUserDisplayed();
     }
 
-    @Given("I Open Dashboard")
-    public void iOpenDashboard() {
-
+    @Then("I Verify SidePanel")
+    public void iVerifySidePanel() {
+        Assert.fail("Test Failure Scenario");
     }
 }
